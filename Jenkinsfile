@@ -38,6 +38,23 @@ pipeline {
       }
     }
     
+    stage('Deploy Project to K8s') {
+      steps {
+        echo 'Deploy Java project to Kubernetes'
+    bat '''
+      minikube delete
+      minikube start
+      minikube image load kamal2123/indiaproj:1.0
+          kubectl apply -f deployment.yaml
+      kubectl apply -f services.yaml
+      kubectl get pods
+      kubectl describe pods
+      kubectl get services
+      minikube addons enable dashboard
+      minikube dashboard
+    '''
+      }
+    }
     stage('Run Docker Container') {
       steps {
         echo 'Running Java Application'
