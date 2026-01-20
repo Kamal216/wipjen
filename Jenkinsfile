@@ -34,18 +34,18 @@ pipeline {
     stage('Build the Docker Image') {
       steps {
         echo 'Building Docker Image'
-        bat 'docker build -t project1img2:latest .'
+        bat 'docker build -t indiaproj:latest .'
       }
     }
     stage('Push Docker Image to DockerHub') {
       steps {
         echo 'Pushing  Docker Image'
-        withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'DOCKER_PASS')]) {
+        withCredentials([string(credentialsId: 'deockercred', variable: 'DOCKER_PASS')]) {
        bat '''
           echo %DOCKER_PASS% | docker login -u kamal2123 --password-stdin
-          docker tag project1img2:latest kamal2123/indiaproj1.0
+          docker tag project1img2:latest kamal2123/indiaproj:latest
 
-          docker push kamal2123/indiaproj:1.0
+          docker push kamal2123/indiaproj:latest
           '''}
       }
     }
@@ -55,8 +55,7 @@ pipeline {
 bat '''
  minikube delete
  minikube start
- minikube image load kamal2123/indiaproj 1.0
-:latest
+ minikube image load kamal2123/indiaproj:latest
           kubectl apply -f deployment.yaml
  kubectl apply -f services.yaml
  kubectl get pods
