@@ -55,16 +55,6 @@ pipeline {
     '''
       }
     }
-    stage('Run Docker Container') {
-      steps {
-        echo 'Running Java Application'
-        bat '''
-        docker rm -f indiaproj-container || exit 0
-        docker run --name indiaproj-container indiaproj-1.0
-        
-        '''               
-      }
-    }
   }
   post {
     success {
