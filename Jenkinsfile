@@ -42,9 +42,10 @@ pipeline {
         echo 'Pushing  Docker Image'
         withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'DOCKER_PASS')]) {
        bat '''
-          echo %DOCKER_PASS% | docker login -u harshit1garg --password-stdin
-          docker tag project1img2:latest harshit1garg/project1img2:latest
-          docker push harshit1garg/project1img2:latest
+          echo %DOCKER_PASS% | docker login -u kamal2123 --password-stdin
+          docker tag project1img2:latest kamal2123/indiaproj1.0
+
+          docker push kamal2123/indiaproj:1.0
           '''}
       }
     }
