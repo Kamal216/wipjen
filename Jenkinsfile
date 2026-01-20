@@ -15,11 +15,11 @@ pipeline {
       steps {
         echo 'JUNIT Test case execution started'
         bat 'mvn clean test'
-        
+       
       }
       post {
         always {
-		  junit '**/target/surefire-reports/*.xml'
+ junit '**/target/surefire-reports/*.xml'
           echo 'Test Run is SUCCESSFUL!'
         }
 
@@ -34,26 +34,48 @@ pipeline {
     stage('Build the Docker Image') {
       steps {
         echo 'Building Docker Image'
-        bat 'docker build -t indiaproj-1.0 .'
+        bat 'docker build -t project1img2:latest .'
       }
     }
-    
+    stage('Push Docker Image to DockerHub') {
+      steps {
+        echo 'Pushing  Docker Image'
+        withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'DOCKER_PASS')]) {
+       bat '''
+          echo %DOCKER_PASS% | docker login -u harshit1garg --password-stdin
+          docker tag project1img2:latest harshit1garg/project1img2:latest
+          docker push harshit1garg/project1img2:latest
+          '''}
+      }
+    }
     stage('Deploy Project to K8s') {
       steps {
         echo 'Deploy Java project to Kubernetes'
-    bat '''
-      minikube start
-      minikube image load kamal2123/indiaproj:1.0
+bat '''
+ minikube delete
+ minikube start
+ minikube image load harshit1garg/project1img2:latest
           kubectl apply -f deployment.yaml
-      kubectl apply -f services.yaml
-      kubectl get pods
-      kubectl describe pods
-      kubectl get services
-      minikube addons enable dashboard
-      minikube dashboard
-    '''
+ kubectl apply -f services.yaml
+ kubectl get pods
+ kubectl describe pods
+ kubectl get services
+ minikube addons enable dashboard
+ minikube dashboard
+'''
       }
     }
+   
+    /*stage('Run Docker Container') {
+      steps {
+        echo 'Running Java Application'
+        bat '''
+        docker rm -f myjavaproj-container || exit 0
+        docker run --name myjavaproj-container myjavaproj:1.0
+       
+        '''              
+      }
+    }*/
   }
   post {
     success {
