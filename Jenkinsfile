@@ -55,7 +55,8 @@ pipeline {
 bat '''
  minikube delete
  minikube start
- minikube image load harshit1garg/project1img2:latest
+ minikube image load kamal2123/indiaproj 1.0
+:latest
           kubectl apply -f deployment.yaml
  kubectl apply -f services.yaml
  kubectl get pods
